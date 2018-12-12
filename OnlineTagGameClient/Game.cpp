@@ -112,6 +112,7 @@ bool Game::init(const char *title, int xPosition, int yPosition, int height, int
 			num *= 10;
 			num += tmp[j] - '0';
 			j++;
+			cout << num << endl;
 		}
 		if (num == 0) {
 			int tmpvar;
@@ -160,15 +161,12 @@ void Game::handleEvents()
 
 void Game::update()
 {
-	//check for incoming data
-	// Check if we got a response from the server
 	SDLNet_CheckSockets(socketSet, 0);
 	if (SDLNet_SocketReady(client) != 0)
 	{
 		//socketvector[i].timeout = SDL_GetTicks();
 		memset(tmp, 0, sizeof(tmp));
 		SDLNet_TCP_Recv(client, tmp, maxMessageLength);
-		cout << "Got the following from server: " << tmp << endl;
 		int num = tmp[0] - '0';
 		int j = 1;
 		while (tmp[j] >= '0' && tmp[j] <= '9')
@@ -200,13 +198,13 @@ void Game::update()
 			return;
 		}
 	}
-	char tempchar[1400];
-	memset(tempchar, 0, sizeof(tempchar));
+
+	memset(tmp, 0, sizeof(tmp));
 	packetStream.writeInt(you->GetCenterX());
 	packetStream.writeInt(you->GetCenterY());
 	packetStream.writeInt(you->GetId());
-	packetStream.toCharArray(tempchar);
-	SDLNet_TCP_Send(client, tempchar, maxMessageLength);
+	packetStream.toCharArray(tmp);
+	SDLNet_TCP_Send(client, tmp, maxMessageLength);
 }
 
 void Game::clean()
