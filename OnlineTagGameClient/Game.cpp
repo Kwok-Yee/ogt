@@ -11,8 +11,8 @@ SDLNet_SocketSet socketSet = SDLNet_AllocSocketSet(1);
 Game::Game()
 {
 	portNumber = 6789;
-	host = "localhost";
-	timeLimit = 10000;
+	host = "192.168.202.210";
+	timeLimit = 20000;
 }
 
 bool Game::init(const char *title, int xPosition, int yPosition, int height, int width, bool fullScreen)
