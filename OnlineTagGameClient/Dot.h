@@ -39,11 +39,14 @@ public:
 
 	void SetPosition(int x, int y);
 	int GetId() { return id; }
+	void SetIsCaught(int state) { caught = state; }
+	int GetIsCaught() { return caught; }
 
 private:
 	bool isLocalplayer;
 	bool isChaser;
 	int id;
+	int caught;
 
 	//The X and Y offsets of the dot
 	int mPosX, mPosY;

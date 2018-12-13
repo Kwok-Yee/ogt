@@ -12,6 +12,7 @@ Game::Game()
 {
 	portNumber = 6789;
 	host = "localhost";
+	timeLimit = 10000;
 }
 
 bool Game::init(const char *title, int xPosition, int yPosition, int height, int width, bool fullScreen)
@@ -164,7 +165,6 @@ void Game::update()
 	SDLNet_CheckSockets(socketSet, 0);
 	if (SDLNet_SocketReady(client) != 0)
 	{
-		//socketvector[i].timeout = SDL_GetTicks();
 		memset(tmp, 0, sizeof(tmp));
 		SDLNet_TCP_Recv(client, tmp, maxMessageLength);
 		int num = tmp[0] - '0';
@@ -175,8 +175,13 @@ void Game::update()
 			num += tmp[j] - '0';
 			j++;
 		}
+		if (num == 2)
+		{
+			cout << "YOU WIN" << endl;
+		}
 		if (num == 3) {
-			clean();
+			cout << "Chaser got the player!" << endl;
+			//clean();
 		}
 		else {
 			packetStream.fromCharArray(tmp);
@@ -185,14 +190,25 @@ void Game::update()
 			packetStream.readInt(y);
 			int tempId;
 			packetStream.readInt(tempId);
-
+			int caught;
+			packetStream.readInt(caught);
+			other->SetIsCaught(caught);
 			other->SetPosition(x, y);
 		}
 	}
 	you->move(width, height);
 	if (host == "localhost") {
+		time = SDL_GetTicks();
+		cout << time << endl;
+		if (time > timeLimit)
+		{
+			sprintf_s(tmp, "2 \n");
+			you->SetIsCaught(1);
+			SDLNet_TCP_Send(client, tmp, maxMessageLength);
+			return;
+		}
 		if (you->CheckCollision(other->GetCenterX(), other->GetCenterY())) {
-			cout << "Chaser got the player!" << endl;
+			other->SetIsCaught(1);
 			sprintf_s(tmp, "3 \n");
 			SDLNet_TCP_Send(client, tmp, maxMessageLength);
 			return;
@@ -203,6 +219,7 @@ void Game::update()
 	packetStream.writeInt(you->GetCenterX());
 	packetStream.writeInt(you->GetCenterY());
 	packetStream.writeInt(you->GetId());
+	packetStream.writeInt(you->GetIsCaught());
 	packetStream.toCharArray(tmp);
 	SDLNet_TCP_Send(client, tmp, maxMessageLength);
 }
@@ -210,6 +227,8 @@ void Game::update()
 void Game::clean()
 {
 	running = false;
+
+	SDLNet_TCP_Close(client);
 
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);

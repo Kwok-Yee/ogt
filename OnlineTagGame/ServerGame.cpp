@@ -104,9 +104,12 @@ void Game::update()
 					num += tmp[j] - '0';
 					j++;
 				}
+				if (num == 2)
+				{
+					cout << "Time's up" << endl;
+				}
 				if (num == 3) {
 					for (int j = 0; j < socketvector.size(); j++) {
-
 						SDLNet_TCP_Send(socketvector[j].socket, tmp, strlen(tmp) + 1);
 						SDLNet_TCP_DelSocket(sockets, socketvector[j].socket);
 						SDLNet_TCP_Close(socketvector[j].socket);
@@ -148,9 +151,6 @@ void Game::clean()
 {
 	running = false;
 
-	// Networking clean
-	for (int i = 0; i < socketvector.size(); i++)
-		SDLNet_TCP_Close(socketvector[i].socket);
 	SDLNet_FreeSocketSet(sockets);
 	SDLNet_TCP_Close(server);
 

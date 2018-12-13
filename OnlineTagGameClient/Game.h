@@ -61,8 +61,6 @@ private:
 		data(TCPsocket sock, Uint32 t, int i) :socket(sock), timeout(t), id(i) {}
 	};
 
-	vector<data> socketvector;
-
 	static const int maxMessageLength = 1400;
 	char tmp[maxMessageLength];
 
@@ -76,6 +74,9 @@ private:
 	const char* server;
 
 	PacketStream packetStream;
+
+	Uint32 time = 0;
+	Uint32 timeLimit = 0;
 	
 	Game();
 	~Game() {}
