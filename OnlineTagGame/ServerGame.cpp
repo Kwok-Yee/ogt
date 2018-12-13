@@ -115,7 +115,6 @@ void Game::update()
 						SDLNet_TCP_Close(socketvector[j].socket);
 						socketvector.erase(socketvector.begin() + j);
 					}
-					clean();
 				}
 				else {
 					for (int k = 0; k < socketvector.size(); k++)

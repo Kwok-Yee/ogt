@@ -126,7 +126,7 @@ bool Game::init(const char *title, int xPosition, int yPosition, int height, int
 			}
 			else {
 				you = new Dot(false, tmpvar);
-				other->SetPosition(200, 200);
+				you->SetPosition(200, 200);
 				other = new Dot(true, tmpvar - 1);
 			}
 			players.push_back(you);
@@ -179,9 +179,8 @@ void Game::update()
 		{
 			cout << "YOU WIN" << endl;
 		}
-		if (num == 3) {
+		else if (num == 3) {
 			cout << "Chaser got the player!" << endl;
-			//clean();
 		}
 		else {
 			packetStream.fromCharArray(tmp);
@@ -199,7 +198,6 @@ void Game::update()
 	you->move(width, height);
 	if (host == "localhost") {
 		time = SDL_GetTicks();
-		cout << time << endl;
 		if (time > timeLimit)
 		{
 			sprintf_s(tmp, "2 \n");
